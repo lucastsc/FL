@@ -1,29 +1,56 @@
 # Federated Learning
-O arquivo FL2.ipynb é a implementação manual de um algoritmo de Aprendizado Federado (Federated Learning).  
 
-A implementação consiste em:  
-1. Servidor seleciona um modelo de rede neural e compartilha com os N clientes.  
-2. Cada cliente treina o modelo recebido, mas com seus dados locais que são privados e não podem ser acessados pelo servidor de agregação.  
-3. Os clientes, após treinarem o modelo com dados locais, enviam apenas o modelo (pesos) de volta ao servidor.  
-4. O servidor recebe os modelos treinados dos N clientes e agrega seus pesos segundo a lógica de Weighted FedAvg.  
-5. Após agregar os pesos (modelos) dos N clientes, o servidor compartilha os pesos resultantes (modelos) de volta para os clientes.  
-6. O processo se repete até possível convergência.
+Este repositório contém uma implementação manual de um algoritmo de **Aprendizado Federado** (Federated Learning) no arquivo `FL2.ipynb`.
 
-O algoritmo principal é a função FL. Ela recebe como parâmetros:  
+## Descrição
 
-1. NCLIENTS: (int) Universo do número de clientes (ativos e inativos) no aprendizado federado  
-2. PROBFAIL: (0<=p<=1) Probabilidade de falha de cada cliente  
-3. ROUNDS: (int) Rodadas de Aprendizado Federado  
-4. OVERLAPPING_ENTRIES_PERCENT: (0<=p<=1) Percentual de overlap no treinamento não-caótico
-5. RANDOM_TRAINING_ENTRIES: (True/False) Clientes com conjuntos de treino totalmente caóticos  
-6. MAX_CHAOTIC_ENTRIES: (int) Até quantos elementos poderão ter os conjuntos aleatórios de treinamento de cada cliente, caso RANDOM_TRAINING_ENTRIES = True  
-7. TRAIN_SIZE: (int) Tamanho do conjunto dos dados de treino  
-8. TEST_SIZE: (int) Tamanho do conjunto dos dados de teste
+O Aprendizado Federado é uma técnica de aprendizado distribuído onde um **servidor central** seleciona um modelo de rede neural e compartilha com vários **clientes**. Cada cliente treina o modelo localmente com seus próprios dados privados e, em seguida, retorna apenas os **pesos do modelo** ao servidor. O servidor, então, agrega os pesos recebidos dos clientes e distribui o modelo atualizado de volta aos clientes. Este processo se repete até a convergência.
 
-O treinamento dos modelos pode ocorrer de 2 maneiras:  
+## Funcionamento
 
-RANDOM_TRAINING_ENTRIES: (True/False) Clientes com conjuntos de treino totalmente aleatórios. Isso significa que se for:    
-1. True: Cada cliente (ci) terá como conjunto de treinamento um número aleatório de entradas de até MAX_CHAOTIC_ENTRIES nos seus dados locais, extraídos da totalidade de 60.000 dados de treinamento do MNIST.
-2. False: Cada cliente (ci) terá como conjunto de treinamento um número fixo de entradas de treinamento, partition = TRAIN_SIZE // len(active_clients_list), podendo haver overlap de dados de treinamento entre os clientes por meio da variável OVERLAPPING_ENTRIES_PERCENT, para simular clientes que apresentem conjuntos de dados semelhantes, caso necessário.
+A implementação do algoritmo de Aprendizado Federado consiste nas seguintes etapas:
 
+1. O servidor seleciona um **modelo de rede neural** e compartilha com os **N clientes**.
+2. Cada cliente treina o modelo com seus dados locais privados, que **não são acessíveis pelo servidor**.
+3. Os clientes enviam de volta ao servidor apenas os **pesos do modelo treinado**.
+4. O servidor **agrega os pesos** dos N clientes utilizando a lógica de **Weighted FedAvg**.
+5. O servidor compartilha o modelo atualizado de volta aos clientes.
+6. O processo se repete por várias rodadas até a convergência do modelo.
 
+## Algoritmo Principal
+
+O algoritmo principal é implementado na função `FL`, que recebe os seguintes parâmetros:
+
+- **NCLIENTS**: (int) Número total de clientes (ativos e inativos) no aprendizado federado.
+- **PROBFAIL**: (float) Probabilidade de falha de cada cliente durante o treinamento, no intervalo \[0, 1\].
+- **ROUNDS**: (int) Número de rodadas de Aprendizado Federado.
+- **OVERLAPPING_ENTRIES_PERCENT**: (float) Percentual de overlap no treinamento não-caótico, no intervalo \[0, 1\].
+- **RANDOM_TRAINING_ENTRIES**: (bool) Define se os conjuntos de treino dos clientes são totalmente caóticos.
+- **MAX_CHAOTIC_ENTRIES**: (int) Número máximo de entradas que podem compor os conjuntos de treino aleatórios de cada cliente, caso `RANDOM_TRAINING_ENTRIES = True`.
+- **TRAIN_SIZE**: (int) Tamanho do conjunto de dados de treino.
+- **TEST_SIZE**: (int) Tamanho do conjunto de dados de teste.
+
+## Métodos de Treinamento
+
+O treinamento dos modelos pode ocorrer de duas maneiras, com base na variável `RANDOM_TRAINING_ENTRIES`:
+
+### 1. Treinamento Caótico (`RANDOM_TRAINING_ENTRIES = True`)
+
+Cada cliente terá um **conjunto de treinamento aleatório**, com um número variável de entradas de até **MAX_CHAOTIC_ENTRIES**, extraídas da totalidade dos **60.000 dados de treinamento do MNIST**.
+
+### 2. Treinamento Organizado (`RANDOM_TRAINING_ENTRIES = False`)
+
+Cada cliente terá um **conjunto fixo de treinamento**, calculado como `partition = TRAIN_SIZE // len(active_clients_list)`. Pode haver **sobreposição** (overlap) de dados de treinamento entre os clientes, controlada pela variável `OVERLAPPING_ENTRIES_PERCENT`, simulando cenários onde os clientes possuem **dados semelhantes**.
+
+## Estrutura do Repositório
+
+- `FL2.ipynb`: Implementação do algoritmo de Aprendizado Federado.
+- `README.md`: Este arquivo, com a documentação do projeto.
+
+## Como Usar
+
+1. Clone este repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+
+2. Abra e execute o notebook FL2.ipynb para rodar a simulação do algoritmo de Aprendizado Federado.
