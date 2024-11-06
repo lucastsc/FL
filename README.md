@@ -1,56 +1,56 @@
 # Federated Learning
 
-Este repositório contém uma implementação manual de um algoritmo de **Aprendizado Federado** (Federated Learning) no arquivo `FL2.ipynb`.
+This repository contains a manual implementation of a **Federated Learning** algorithm in the file `FL2.ipynb`.
 
-## Descrição
+## Description
 
-O Aprendizado Federado é uma técnica de aprendizado distribuído onde um **servidor central** seleciona um modelo de rede neural e compartilha com vários **clientes**. Cada cliente treina o modelo localmente com seus próprios dados privados e, em seguida, retorna apenas os **pesos do modelo** ao servidor. O servidor, então, agrega os pesos recebidos dos clientes e distribui o modelo atualizado de volta aos clientes. Este processo se repete até a convergência.
+Federated Learning is a distributed learning technique where a **central server** selects a neural network model and shares it with multiple **clients**. Each client trains the model locally on its own private data and then returns only the **model weights** to the server. The server then aggregates the weights received from clients and distributes the updated model back to the clients. This process repeats until convergence.
 
-## Funcionamento
+## Operation
 
-A implementação do algoritmo de Aprendizado Federado consiste nas seguintes etapas:
+The implementation of the Federated Learning algorithm consists of the following steps:
 
-1. O servidor seleciona um **modelo de rede neural** e compartilha com os **N clientes**.
-2. Cada cliente treina o modelo com seus dados locais privados, que **não são acessíveis pelo servidor**.
-3. Os clientes enviam de volta ao servidor apenas os **pesos do modelo treinado**.
-4. O servidor **agrega os pesos** dos N clientes utilizando a lógica de **Weighted FedAvg**.
-5. O servidor compartilha o modelo atualizado de volta aos clientes.
-6. O processo se repete por várias rodadas até a convergência do modelo.
+1. The server selects a **neural network model** and shares it with **N clients**.
+2. Each client trains the model with its private local data, which **the server cannot access**.
+3. The clients send back only the **trained model weights** to the server.
+4. The server **aggregates the weights** from the N clients using the **Weighted FedAvg** logic.
+5. The server shares the updated model back with the clients.
+6. The process repeats for several rounds until model convergence.
 
-## Algoritmo Principal
+## Main Algorithm
 
-O algoritmo principal é implementado na função `FL`, que recebe os seguintes parâmetros:
+The main algorithm is implemented in the `FL` function, which takes the following parameters:
 
-- **NCLIENTS**: (int) Número total de clientes (ativos e inativos) no aprendizado federado.
-- **PROBFAIL**: (float) Probabilidade de falha de cada cliente durante o treinamento, no intervalo \[0, 1\].
-- **ROUNDS**: (int) Número de rodadas de Aprendizado Federado.
-- **OVERLAPPING_ENTRIES_PERCENT**: (float) Percentual de overlap no treinamento não-caótico, no intervalo \[0, 1\].
-- **RANDOM_TRAINING_ENTRIES**: (bool) Define se os conjuntos de treino dos clientes são totalmente caóticos.
-- **MAX_CHAOTIC_ENTRIES**: (int) Número máximo de entradas que podem compor os conjuntos de treino aleatórios de cada cliente, caso `RANDOM_TRAINING_ENTRIES = True`.
-- **TRAIN_SIZE**: (int) Tamanho do conjunto de dados de treino.
-- **TEST_SIZE**: (int) Tamanho do conjunto de dados de teste.
+- **NCLIENTS**: (int) Total number of clients (active and inactive) in federated learning.
+- **PROBFAIL**: (float) Failure probability for each client during training, in the range \[0, 1\].
+- **ROUNDS**: (int) Number of Federated Learning rounds.
+- **OVERLAPPING_ENTRIES_PERCENT**: (float) Overlap percentage in non-chaotic training, in the range \[0, 1\].
+- **RANDOM_TRAINING_ENTRIES**: (bool) Specifies whether the clients' training sets are completely chaotic.
+- **MAX_CHAOTIC_ENTRIES**: (int) Maximum number of entries that can make up each client’s random training set if `RANDOM_TRAINING_ENTRIES = True`.
+- **TRAIN_SIZE**: (int) Size of the training dataset.
+- **TEST_SIZE**: (int) Size of the test dataset.
 
-## Métodos de Treinamento
+## Training Methods
 
-O treinamento dos modelos pode ocorrer de duas maneiras, com base na variável `RANDOM_TRAINING_ENTRIES`:
+The model training can occur in two ways, based on the `RANDOM_TRAINING_ENTRIES` variable:
 
-### 1. Treinamento Caótico (`RANDOM_TRAINING_ENTRIES = True`)
+### 1. Chaotic Training (`RANDOM_TRAINING_ENTRIES = True`)
 
-Cada cliente terá um **conjunto de treinamento aleatório**, com um número variável de entradas de até **MAX_CHAOTIC_ENTRIES**, extraídas da totalidade dos **60.000 dados de treinamento do MNIST**.
+Each client will have a **random training set** with a variable number of entries, up to **MAX_CHAOTIC_ENTRIES**, drawn from the entire **60,000 MNIST training data entries**.
 
-### 2. Treinamento Organizado (`RANDOM_TRAINING_ENTRIES = False`)
+### 2. Organized Training (`RANDOM_TRAINING_ENTRIES = False`)
 
-Cada cliente terá um **conjunto fixo de treinamento**, calculado como `partition = TRAIN_SIZE // len(active_clients_list)`. Pode haver **sobreposição** (overlap) de dados de treinamento entre os clientes, controlada pela variável `OVERLAPPING_ENTRIES_PERCENT`, simulando cenários onde os clientes possuem **dados semelhantes**.
+Each client will have a **fixed training set**, calculated as `partition = TRAIN_SIZE // len(active_clients_list)`. There may be **overlap** in training data among clients, controlled by the `OVERLAPPING_ENTRIES_PERCENT` variable, simulating scenarios where clients have **similar data**.
 
-## Estrutura do Repositório
+## Repository Structure
 
-- `FL2.ipynb`: Implementação do algoritmo de Aprendizado Federado.
-- `README.md`: Este arquivo, com a documentação do projeto.
+- `FL2.ipynb`: Implementation of the Federated Learning algorithm.
+- `README.md`: This file, containing project documentation.
 
-## Como Usar
+## How to Use
 
-1. Clone este repositório:
+1. Clone this repository:
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-
-2. Abra e execute o notebook FL2.ipynb para rodar a simulação do algoritmo de Aprendizado Federado.
+   git clone https://github.com/lucastsc/FL.git
+   
+2. Open and run the FL2.ipynb notebook to simulate the Federated Learning algorithm.
